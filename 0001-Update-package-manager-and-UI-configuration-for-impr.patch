@@ -1,0 +1,156 @@
+From 9b266c975050a1ae1826e055de7bb6ae0e86eb1f Mon Sep 17 00:00:00 2001
+From: kimisiu <50860300-kimisiu@users.noreply.replit.com>
+Date: Sun, 8 Mar 2026 16:14:40 +0000
+Subject: [PATCH 01/14] Update package manager and UI configuration for
+ improved development environment
+
+Update pnpm version in package.json to 10.26.1, modify Vite configuration in ui/vite.config.ts to use port 5000 and allow all hosts, and add a replit.md file for project documentation.
+
+Replit-Commit-Author: Agent
+Replit-Commit-Session-Id: a2ca6d8a-1057-4e9d-b28f-e41b19f63099
+Replit-Commit-Checkpoint-Type: full_checkpoint
+Replit-Commit-Event-Id: 20620580-096f-4eee-9d59-b554e8bf6ea9
+Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/c9d8286b-c48c-418d-bd8c-0eb553848865/a2ca6d8a-1057-4e9d-b28f-e41b19f63099/JcnxbRG
+Replit-Helium-Checkpoint-Created: true
+---
+ .replit           | 39 +++++++++++++++++++++++++++++++++++++
+ package.json      |  2 +-
+ replit.md         | 49 +++++++++++++++++++++++++++++++++++++++++++++++
+ ui/vite.config.ts |  5 +++--
+ 4 files changed, 92 insertions(+), 3 deletions(-)
+ create mode 100644 .replit
+ create mode 100644 replit.md
+
+diff --git a/.replit b/.replit
+new file mode 100644
+index 0000000000..38d8098b13
+--- /dev/null
++++ b/.replit
+@@ -0,0 +1,39 @@
++modules = ["swift-5.8", "bash", "nodejs-22"]
++[agent]
++expertMode = true
++
++[nix]
++channel = "stable-25_05"
++
++[workflows]
++runButton = "Project"
++
++[[workflows.workflow]]
++name = "Project"
++mode = "parallel"
++author = "agent"
++
++[[workflows.workflow.tasks]]
++task = "workflow.run"
++args = "Start application"
++
++[[workflows.workflow]]
++name = "Start application"
++author = "agent"
++
++[[workflows.workflow.tasks]]
++task = "shell.exec"
++args = "cd ui && COREPACK_ENABLE_STRICT=0 pnpm run dev"
++waitForPort = 5000
++
++[workflows.workflow.metadata]
++outputType = "webview"
++
++[[ports]]
++localPort = 5000
++externalPort = 80
++
++[deployment]
++deploymentTarget = "static"
++build = ["bash", "-c", "cd ui && COREPACK_ENABLE_STRICT=0 pnpm run build"]
++publicDir = "dist/control-ui"
+diff --git a/package.json b/package.json
+index 93692b174a..1590379395 100644
+--- a/package.json
++++ b/package.json
+@@ -415,7 +415,7 @@
+   "engines": {
+     "node": ">=22.12.0"
+   },
+-  "packageManager": "pnpm@10.23.0",
++  "packageManager": "pnpm@10.26.1",
+   "pnpm": {
+     "minimumReleaseAge": 2880,
+     "overrides": {
+diff --git a/replit.md b/replit.md
+new file mode 100644
+index 0000000000..a36e196a81
+--- /dev/null
++++ b/replit.md
+@@ -0,0 +1,49 @@
++# OpenClaw
++
++## Overview
++
++OpenClaw is a multi-channel AI gateway with extensible messaging integrations. It allows you to connect AI models (OpenAI, Anthropic, Gemini, etc.) with various messaging platforms (Telegram, Discord, Slack, iMessage, Matrix, etc.).
++
++## Architecture
++
++- **Backend**: TypeScript/Node.js gateway server (`src/`) — handles AI model routing, channel integrations, webhooks, and automation
++- **Frontend UI**: Lit-based web control dashboard (`ui/`) — provides a management interface for the gateway
++- **Extensions**: Channel-specific plugins (`extensions/`) — e.g., Discord, Telegram, Slack, Matrix, etc.
++- **Packages**: Shared packages (`packages/`) — clawdbot, moltbot
++
++## Tech Stack
++
++- **Runtime**: Node.js 22+
++- **Package manager**: pnpm 10.26.1
++- **Frontend**: Lit (Web Components), Vite 7
++- **Backend**: TypeScript, Hono (web framework)
++- **Build**: tsdown (TypeScript bundler)
++
++## Development Workflow
++
++The `Start application` workflow runs the UI dev server:
++```
++cd ui && COREPACK_ENABLE_STRICT=0 pnpm run dev
++```
++
++The UI runs on port 5000 at `0.0.0.0` with all hosts allowed for Replit preview compatibility.
++
++## Configuration
++
++- Copy `.env.example` to `.env` and fill in required values
++- The gateway requires at minimum: `OPENCLAW_GATEWAY_TOKEN` and at least one AI provider API key
++- Channel tokens (Telegram, Discord, etc.) are set per-channel
++
++## Key Files
++
++- `src/` — Main backend TypeScript source
++- `ui/` — Frontend control dashboard (Lit + Vite)
++- `extensions/` — Channel integration plugins
++- `packages/` — Shared sub-packages
++- `.env.example` — Environment variable template
++- `docker-compose.yml` — Docker setup for self-hosting
++
++## Notes
++
++- The `packageManager` field in `package.json` was updated from `pnpm@10.23.0` to `pnpm@10.26.1` to match the Replit environment
++- Vite server config updated to use port 5000 and `allowedHosts: true` for Replit proxy compatibility
+diff --git a/ui/vite.config.ts b/ui/vite.config.ts
+index 1f34fb313c..6b22ea6041 100644
+--- a/ui/vite.config.ts
++++ b/ui/vite.config.ts
+@@ -35,9 +35,10 @@ export default defineConfig(() => {
+       chunkSizeWarningLimit: 1024,
+     },
+     server: {
+-      host: true,
+-      port: 5173,
++      host: "0.0.0.0",
++      port: 5000,
+       strictPort: true,
++      allowedHosts: true,
+     },
+   };
+ });
+-- 
+2.50.1
+

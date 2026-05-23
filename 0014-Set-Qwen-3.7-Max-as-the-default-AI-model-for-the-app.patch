@@ -1,0 +1,76 @@
+From 5b02a6aac4304c9a58c8fe8005a0db5832bfd235 Mon Sep 17 00:00:00 2001
+From: kimisiu <50860300-kimisiu@users.noreply.replit.com>
+Date: Sat, 23 May 2026 00:48:26 +0000
+Subject: [PATCH 14/14] Set Qwen 3.7 Max as the default AI model for the
+ application
+
+Update default AI model configurations in `scripts/start-dev.sh`, `src/agents/defaults.ts`, and `extensions/openrouter/onboard.ts` to use "openrouter/qwen/qwen-3.7-max" as the primary and default model.
+
+Replit-Commit-Author: Agent
+Replit-Commit-Session-Id: 8521e462-9e01-43f2-9549-7bf307058b6c
+Replit-Commit-Checkpoint-Type: full_checkpoint
+Replit-Commit-Event-Id: 6489b914-2cb0-4ddf-a3d9-68ee282dcaa2
+Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/c9d8286b-c48c-418d-bd8c-0eb553848865/8521e462-9e01-43f2-9549-7bf307058b6c/0fefSJX
+Replit-Helium-Checkpoint-Created: true
+---
+ .replit                          | 1 +
+ extensions/openrouter/onboard.ts | 2 +-
+ scripts/start-dev.sh             | 5 ++++-
+ src/agents/defaults.ts           | 6 +++---
+ 4 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/.replit b/.replit
+index b0ef17f068..a3f94f613a 100644
+--- a/.replit
++++ b/.replit
+@@ -63,3 +63,4 @@ CLAWDBOT_SKIP_CHANNELS = "1"
+ OPENCLAW_BIND = "0.0.0.0"
+ GEMINI_API_KEY = "AIzaSyAV_TNL3szP6EdDIjbniAVDSWF-ga9f-vs"
+ OPENCLAW_SKIP_DEVICE_PAIRING = "1"
++OPENROUTER_API_KEY = "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"
+diff --git a/extensions/openrouter/onboard.ts b/extensions/openrouter/onboard.ts
+index f566239919..2c787b8b0b 100644
+--- a/extensions/openrouter/onboard.ts
++++ b/extensions/openrouter/onboard.ts
+@@ -3,7 +3,7 @@ import {
+   type OpenClawConfig,
+ } from "openclaw/plugin-sdk/provider-onboard";
+ 
+-export const OPENROUTER_DEFAULT_MODEL_REF = "openrouter/auto";
++export const OPENROUTER_DEFAULT_MODEL_REF = "openrouter/qwen/qwen-3.7-max";
+ 
+ export function applyOpenrouterProviderConfig(cfg: OpenClawConfig): OpenClawConfig {
+   const models = { ...cfg.agents?.defaults?.models };
+diff --git a/scripts/start-dev.sh b/scripts/start-dev.sh
+index 8bd56dfee1..3a78f17275 100755
+--- a/scripts/start-dev.sh
++++ b/scripts/start-dev.sh
+@@ -15,7 +15,10 @@ cat > ~/.openclaw-dev/openclaw.json << 'GATEWAYCONFIG'
+   "agents": {
+     "defaults": {
+       "workspace": "/home/runner/.openclaw/workspace-dev",
+-      "skipBootstrap": true
++      "skipBootstrap": true,
++      "model": {
++        "primary": "openrouter/qwen/qwen-3.7-max"
++      }
+     },
+     "list": [
+       {
+diff --git a/src/agents/defaults.ts b/src/agents/defaults.ts
+index e5ac29f8ca..2570b5b761 100644
+--- a/src/agents/defaults.ts
++++ b/src/agents/defaults.ts
+@@ -1,6 +1,6 @@
+ // Defaults for agent metadata when upstream does not supply them.
+-// Model id uses pi-ai's built-in Google catalog.
+-export const DEFAULT_PROVIDER = "google";
+-export const DEFAULT_MODEL = "gemini-2.5-flash";
++// On Replit, default to OpenRouter Qwen 3.7 Max when an API key is configured.
++export const DEFAULT_PROVIDER = "openrouter";
++export const DEFAULT_MODEL = "qwen/qwen-3.7-max";
+ // Conservative fallback used when model metadata is unavailable.
+ export const DEFAULT_CONTEXT_TOKENS = 200_000;
+-- 
+2.50.1
+

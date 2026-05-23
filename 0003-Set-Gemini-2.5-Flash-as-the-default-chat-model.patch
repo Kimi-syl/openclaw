@@ -1,0 +1,69 @@
+From e53257cf3864ebe82bea5b18ed7af67814c317ca Mon Sep 17 00:00:00 2001
+From: kimisiu <50860300-kimisiu@users.noreply.replit.com>
+Date: Sun, 8 Mar 2026 17:17:31 +0000
+Subject: [PATCH 03/14] Set Gemini 2.5 Flash as the default chat model
+
+Update default provider to "google" and default model to "gemini-2.5-flash" in src/agents/defaults.ts.
+
+Replit-Commit-Author: Agent
+Replit-Commit-Session-Id: a2ca6d8a-1057-4e9d-b28f-e41b19f63099
+Replit-Commit-Checkpoint-Type: full_checkpoint
+Replit-Commit-Event-Id: 09fb4189-930a-4827-a358-16ccde4d35b0
+Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/c9d8286b-c48c-418d-bd8c-0eb553848865/a2ca6d8a-1057-4e9d-b28f-e41b19f63099/PB1d1i0
+Replit-Helium-Checkpoint-Created: true
+---
+ .replit                | 16 +++++++++++++++-
+ src/agents/defaults.ts |  6 +++---
+ 2 files changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/.replit b/.replit
+index 6309543c21..0f0c04f24e 100644
+--- a/.replit
++++ b/.replit
+@@ -33,6 +33,20 @@ waitForPort = 5000
+ localPort = 5000
+ externalPort = 80
+ 
++[[ports]]
++localPort = 19001
++externalPort = 3000
++
++[[ports]]
++localPort = 19003
++externalPort = 3001
++exposeLocalhost = true
++
++[[ports]]
++localPort = 19004
++externalPort = 3002
++exposeLocalhost = true
++
+ [deployment]
+ deploymentTarget = "static"
+ build = ["bash", "-c", "cd ui && COREPACK_ENABLE_STRICT=0 pnpm run build"]
+@@ -42,7 +56,7 @@ publicDir = "dist/control-ui"
+ 
+ [userenv.shared]
+ OPENCLAW_GATEWAY_TOKEN = "replit-dev-key-change-in-production"
+-GOOGLE_API_KEY = "AIzaSyAV_TNL3szP6EdDIjbniAVDSWF-ga9f-vs"
+ OPENCLAW_SKIP_CHANNELS = "1"
+ CLAWDBOT_SKIP_CHANNELS = "1"
+ OPENCLAW_BIND = "0.0.0.0"
++GEMINI_API_KEY = "AIzaSyAV_TNL3szP6EdDIjbniAVDSWF-ga9f-vs"
+diff --git a/src/agents/defaults.ts b/src/agents/defaults.ts
+index f1c74b0d5a..e5ac29f8ca 100644
+--- a/src/agents/defaults.ts
++++ b/src/agents/defaults.ts
+@@ -1,6 +1,6 @@
+ // Defaults for agent metadata when upstream does not supply them.
+-// Model id uses pi-ai's built-in Anthropic catalog.
+-export const DEFAULT_PROVIDER = "anthropic";
+-export const DEFAULT_MODEL = "claude-opus-4-6";
++// Model id uses pi-ai's built-in Google catalog.
++export const DEFAULT_PROVIDER = "google";
++export const DEFAULT_MODEL = "gemini-2.5-flash";
+ // Conservative fallback used when model metadata is unavailable.
+ export const DEFAULT_CONTEXT_TOKENS = 200_000;
+-- 
+2.50.1
+
